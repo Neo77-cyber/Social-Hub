@@ -1,8 +1,5 @@
 # Social-Hub
-# Social Media App
 
-# Social-Hub
-# Social Media App
 
 The Social Media App is a web application that allows users to connect and share posts with their friends and followers. It provides features such as creating an account, posting updates, following other users, and interacting with posts through likes and comments.
 
