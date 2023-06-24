@@ -1,10 +1,10 @@
-from .models import User
+from database.models import User
 from datetime import datetime, timedelta
 import jwt
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
-from utils.secrets import password_context
-from utils.secrets import SECRET_KEY
+from database.hash import password_context, SECRET_KEY
+
 
 
 

@@ -1,6 +1,6 @@
 from tortoise import fields
 from tortoise.models import Model
-from utils.secrets import password_context
+from database.hash import password_context
 
 
 
