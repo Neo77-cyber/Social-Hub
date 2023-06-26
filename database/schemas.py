@@ -61,3 +61,4 @@ class MessageCreateRequest(BaseModel):
 class MessageResponse(BaseModel):
      user: str
      message: str
+

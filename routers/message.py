@@ -16,26 +16,28 @@ router = APIRouter(prefix='/message',
 
 
 
-@router.post("/message", response_model=MessageResponse,
-             description = 'Create a message to a user')
-async def send_message(message: MessageCreateRequest, current_user: User = Depends(get_current_user), token: str = Depends(oauth2_scheme)):
+@router.post("/message", response_model=MessageResponse, description='Create a message to a user')
+async def send_message(
+    message: MessageCreateRequest,
+    current_user: User = Depends(get_current_user),
+    token: str = Depends(oauth2_scheme)
+):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         sender_username = payload.get("sub")
         sender = await User.get(username=sender_username)
         if not sender:
             raise HTTPException(status_code=401, detail="Invalid token.")
-        user_id = sender.id
+
+        if current_user.id != sender.id:
+            raise HTTPException(status_code=403, detail="Unauthorized")
 
         recipient = await User.get(username=message.recipient)
         if not recipient:
             raise HTTPException(status_code=404, detail="Recipient not found.")
-        
-        if current_user.username != sender_username:
-            raise HTTPException(status_code=403, detail="Unauthorized")
 
         message_obj = await Message.create(
-            user_id_id=user_id,
+            user_id_id=sender.id,  
             recipient=recipient,
             message=message.message,
         )
@@ -49,17 +51,17 @@ async def send_message(message: MessageCreateRequest, current_user: User = Depen
         raise HTTPException(status_code=401, detail="Token has expired.")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token.")
+
+
     
 
-@router.get("/messages/{recipient}", response_model=List[MessageResponse],
-                                    description = 'Retrieve all messages sent to a user')
+@router.get("/messages/{recipient}", response_model=List[MessageResponse], description='Retrieve all messages sent to a user')
 async def get_messages(recipient: str, current_user: User = Depends(get_current_user)):
-    recipient_user = await User.get(username=recipient)
+    recipient_user = await User.filter(username=recipient).first()
     if not recipient_user:
         raise HTTPException(status_code=404, detail="Recipient not found.")
 
-    
-    if current_user.username != recipient and current_user not in recipient_user.following:
+    if current_user.username != recipient and current_user not in await recipient_user.following.all():
         raise HTTPException(status_code=403, detail="Unauthorized")
 
     messages = await Message.filter(recipient=recipient_user).select_related("user_id")
@@ -73,3 +75,4 @@ async def get_messages(recipient: str, current_user: User = Depends(get_current_
         message_responses.append(message_response)
 
     return message_responses
+
