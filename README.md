@@ -3,6 +3,8 @@
 
 The Social Media App is a web application that allows users to connect and share posts with their friends and followers. It provides features such as creating an account, posting updates, following other users, and interacting with posts through likes and comments.
 
+**Note: The application is live and deployed. You can access the live versions of the web app using the following links: [Live Demo](https://social-hub-viq3.onrender.com/docs) 
+
 ## Features
 
 - User registration and authentication
