@@ -22,7 +22,7 @@ app.include_router(search.router)
 
 register_tortoise(
     app,
-    db_url='YOUR POSTGRES URL',
+    db_url='postgres://szmrbhcz:thYs1wrImPY9iYZFHeBolriAsV87-s-C@snuffleupagus.db.elephantsql.com/szmrbhcz',
     modules={'models': ['database.models']},
     generate_schemas=True,
     add_exception_handlers=True,
